@@ -39,8 +39,8 @@ typedef struct {
   int print_timestamp;
 } ts_state_t;
 
-static int ts_input(ts_state_t *s);
-static int ts_output(ts_state_t *s, char *buf, size_t buflen);
+static int tscatin(ts_state_t *s);
+static int tscatout(ts_state_t *s, char *buf, size_t buflen);
 static void usage(void);
 
 extern char *__progname;
@@ -54,7 +54,7 @@ static const struct option long_options[] = {
 
 int main(int argc, char *argv[]) {
   int ch;
-  ts_state_t *s;
+  ts_state_t s = {0};
   time_t now;
 
   now = time(NULL);
@@ -73,30 +73,26 @@ int main(int argc, char *argv[]) {
   if (setvbuf(stdout, NULL, _IOLBF, 0) < 0)
     err(111, "setvbuf");
 
-  s = calloc(1, sizeof(ts_state_t));
-  if (s == NULL)
-    err(111, "calloc");
-
-  s->output = STDOUT_FILENO;
-  s->print_timestamp = 1;
+  s.output = STDOUT_FILENO;
+  s.print_timestamp = 1;
 
   while ((ch = getopt_long(argc, argv, "f:ho:W:", long_options, NULL)) != -1) {
     switch (ch) {
     case 'f':
-      s->format = optarg;
+      s.format = optarg;
       break;
     case 'o':
-      s->output = strtonum(optarg, 1, 3, NULL);
+      s.output = strtonum(optarg, 1, 3, NULL);
       if (errno)
         err(EXIT_FAILURE, "strtonum");
       break;
     case 'W':
       if (strcmp(optarg, "block") == 0)
-        s->write_error = TS_WR_BLOCK;
+        s.write_error = TS_WR_BLOCK;
       else if (strcmp(optarg, "drop") == 0)
-        s->write_error = TS_WR_DROP;
+        s.write_error = TS_WR_DROP;
       else if (strcmp(optarg, "exit") == 0)
-        s->write_error = TS_WR_EXIT;
+        s.write_error = TS_WR_EXIT;
       else
         errx(EXIT_FAILURE, "invalid option: %s: block|drop|exit", optarg);
 
@@ -110,35 +106,35 @@ int main(int argc, char *argv[]) {
   argc -= optind;
   argv += optind;
 
-  s->label = (argc == 0) ? "" : argv[0];
+  s.label = (argc == 0) ? "" : argv[0];
 
-  if (s->format == NULL)
-    s->format = "%FT%T%z";
+  if (s.format == NULL)
+    s.format = "%FT%T%z";
 
-  if ((s->write_error != TS_WR_BLOCK) && (s->output & STDOUT_FILENO) &&
+  if ((s.write_error != TS_WR_BLOCK) && (s.output & STDOUT_FILENO) &&
       (fcntl(fileno(stdout), F_SETFL, O_NONBLOCK) < 0))
     err(111, "fcntl");
 
-  if ((s->write_error != TS_WR_BLOCK) && (s->output & STDERR_FILENO) &&
+  if ((s.write_error != TS_WR_BLOCK) && (s.output & STDERR_FILENO) &&
       (fcntl(fileno(stderr), F_SETFL, O_NONBLOCK) < 0))
     err(111, "fcntl");
 
   if (restrict_process_stdin() < 0)
     err(3, "restrict_process_stdin");
 
-  if (ts_input(s) < 0)
-    err(111, "ts_input");
+  if (tscatin(&s) < 0)
+    err(111, "tscatin");
 
   exit(0);
 }
 
-static int ts_input(ts_state_t *s) {
+static int tscatin(ts_state_t *s) {
   char *buf = NULL;
   size_t buflen = 0;
   ssize_t n;
 
   while ((n = getnline(&buf, &buflen, 4096, stdin)) != -1) {
-    if (ts_output(s, buf, n) < 0) {
+    if (tscatout(s, buf, n) < 0) {
       if (errno == EAGAIN && s->write_error == TS_WR_DROP)
         continue;
       return -1;
@@ -151,7 +147,7 @@ static int ts_input(ts_state_t *s) {
   return 0;
 }
 
-static int ts_output(ts_state_t *s, char *buf, size_t n) {
+static int tscatout(ts_state_t *s, char *buf, size_t n) {
   char timestamp[64] = {0};
   time_t now;
   struct tm *tm;
