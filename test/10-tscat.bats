@@ -64,3 +64,14 @@ EOF
     [ "$status" -eq 0 ]
     [[ "$output" =~ $match ]]
 }
+
+@test "stdin: no output" {
+    run tscat --output="0" <<<$PATH
+    cat << EOF
+--- output
+$output
+--- output
+EOF
+    [ "$status" -eq 0 ]
+    [[ "$output" =~ ^$ ]]
+}

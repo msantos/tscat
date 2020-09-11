@@ -82,7 +82,7 @@ int main(int argc, char *argv[]) {
       s.format = optarg;
       break;
     case 'o':
-      s.output = strtonum(optarg, 1, 3, NULL);
+      s.output = strtonum(optarg, 0, 3, NULL);
       if (errno)
         err(EXIT_FAILURE, "strtonum");
       break;
