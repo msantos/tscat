@@ -11,9 +11,11 @@ and standard error.
 
 # EXAMPLES
 
-    cat /etc/passwd | tscat
+    $ echo test | tscat
+    2020-10-11T07:09:13-0400 test
 
-    cat /etc/passwd | tscat foo
+    $ echo test | tscat foo
+    2020-10-11T07:09:15-0400 foo test
 
 # Build
 
