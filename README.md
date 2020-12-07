@@ -17,6 +17,17 @@ and standard error.
     $ echo test | tscat foo
     2020-10-11T07:09:15-0400 foo test
 
+    # duplicate output to stdout/stderr
+    $ echo test | tscat -o 3 foo
+    2020-10-11T07:09:15-0400 foo 2020-10-11T07:09:15-0400 foo test
+    test
+
+    $ echo test | tscat -o 3 foo > /dev/null
+    2020-10-11T07:09:15-0400 foo test
+
+    $ echo test | tscat -o 3 foo 2> /dev/null
+    2020-10-11T07:09:15-0400 foo test
+
 # Build
 
     make
