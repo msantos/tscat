@@ -26,9 +26,6 @@ int restrict_process_init() {
 int restrict_process_stdin() {
   struct rlimit rl_zero = {0};
 
-  if (setrlimit(RLIMIT_NOFILE, &rl_zero) < 0)
-    return -1;
-
-  return setrlimit(RLIMIT_FSIZE, &rl_zero);
+  return setrlimit(RLIMIT_NOFILE, &rl_zero);
 }
 #endif
