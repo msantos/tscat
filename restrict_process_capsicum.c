@@ -34,7 +34,10 @@ int restrict_process_stdin() {
   cap_rights_t policy_read;
   cap_rights_t policy_write;
 
-  int fd = -1;
+  int fd;
+
+  if (cap_enter() < 0)
+    return -1;
 
   (void)cap_rights_init(&policy_read, CAP_READ, CAP_EVENT, CAP_FCNTL);
   (void)cap_rights_init(&policy_write, CAP_WRITE, CAP_READ);
@@ -59,6 +62,6 @@ int restrict_process_stdin() {
       return -1;
   }
 
-  return cap_enter();
+  return 0;
 }
 #endif
