@@ -1,4 +1,4 @@
-/* * Copyright (c) 2020, Michael Santos <michael.santos@gmail.com>
+/* Copyright (c) 2020-2021, Michael Santos <michael.santos@gmail.com>
  *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -18,6 +18,7 @@
 #include <getopt.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdnoreturn.h>
 #include <string.h>
 #include <sys/resource.h>
 #include <time.h>
@@ -41,7 +42,7 @@ typedef struct {
 
 static int tscatin(ts_state_t *s);
 static int tscatout(ts_state_t *s, char *buf, size_t buflen);
-static void usage(void);
+static noreturn void usage(void);
 
 extern char *__progname;
 
@@ -209,7 +210,7 @@ static int tscatout(ts_state_t *s, char *buf, size_t n) {
   return 0;
 }
 
-static void usage() {
+static noreturn void usage() {
   errx(EXIT_FAILURE,
        "[OPTION] [<LABEL>]\n"
        "Timestamp stdin to stdout/stderr\n"
