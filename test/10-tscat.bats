@@ -75,3 +75,13 @@ EOF
     [ "$status" -eq 0 ]
     [[ "$output" =~ ^$ ]]
 }
+
+@test "process restriction: ioctl: redirect stdout to a device" {
+    run script -e -a /dev/null -c "tscat <<<$PATH >/dev/null"
+    cat << EOF
+--- output
+$output
+--- output
+EOF
+    [ "$status" -eq 0 ]
+}
