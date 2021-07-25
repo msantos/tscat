@@ -71,7 +71,7 @@ int main(int argc, char *argv[]) {
   if (restrict_process_init() < 0)
     err(111, "restrict_process_init");
 
-  if (setvbuf(stdout, NULL, _IOLBF, 0) < 0)
+  if (setvbuf(stdout, NULL, _IONBF, 0) < 0)
     err(111, "setvbuf");
 
   s.output = STDOUT_FILENO;
