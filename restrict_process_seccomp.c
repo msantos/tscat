@@ -1,4 +1,4 @@
-/* Copyright (c) 2020, Michael Santos <michael.santos@gmail.com>
+/* Copyright (c) 2020-2022, Michael Santos <michael.santos@gmail.com>
  *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -90,6 +90,9 @@ int restrict_process_init() {
 #endif
 #ifdef __NR_openat
       SC_ALLOW(openat),
+#endif
+#ifdef __NR_ioctl
+      SC_ALLOW(ioctl),
 #endif
 #ifdef __NR_newfstatat
       SC_ALLOW(newfstatat),
@@ -244,6 +247,9 @@ int restrict_process_stdin() {
 #endif
 
 /* Syscalls to allow */
+#ifdef __NR_ioctl
+      SC_ALLOW(ioctl),
+#endif
 
 /* test /etc/localtime changes */
 #ifdef __NR_newfstatat

@@ -1,4 +1,4 @@
-/* Copyright (c) 2020-2021, Michael Santos <michael.santos@gmail.com>
+/* Copyright (c) 2020-2022, Michael Santos <michael.santos@gmail.com>
  *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -28,7 +28,7 @@
 #include "restrict_process.h"
 #include "strtonum.h"
 
-#define TS_VERSION "0.1.0"
+#define TS_VERSION "0.2.0"
 
 enum { TS_WR_BLOCK = 0, TS_WR_DROP, TS_WR_EXIT };
 
@@ -71,7 +71,7 @@ int main(int argc, char *argv[]) {
   if (restrict_process_init() < 0)
     err(111, "restrict_process_init");
 
-  if (setvbuf(stdout, NULL, _IONBF, 0) < 0)
+  if (setvbuf(stdout, NULL, _IOLBF, 0) < 0)
     err(111, "setvbuf");
 
   s.output = STDOUT_FILENO;

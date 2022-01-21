@@ -68,8 +68,9 @@ and standard error.
 
 LABEL="${1-""}"
 exec awk -v service="$LABEL" '{
-  printf("%s %s %s\n", strftime("%FT%T%z"), service, $0) > "/dev/stderr"
-  printf("%s %s %s\n", strftime("%FT%T%z"), service, $0)
+  t = strftime("%FT%T%z")
+  printf("%s %s %s\n", t, service, $0) > "/dev/stderr"
+  printf("%s %s %s\n", t, service, $0)
   fflush()
 }'
 ~~~
