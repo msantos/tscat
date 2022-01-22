@@ -57,6 +57,7 @@ int main(int argc, char *argv[]) {
   int ch;
   ts_state_t s = {0};
   time_t now;
+  const char *errstr = NULL;
 
   now = time(NULL);
   if (now == -1)
@@ -83,9 +84,9 @@ int main(int argc, char *argv[]) {
       s.format = optarg;
       break;
     case 'o':
-      s.output = strtonum(optarg, 0, 3, NULL);
-      if (errno)
-        err(EXIT_FAILURE, "strtonum");
+      s.output = strtonum(optarg, 0, 3, &errstr);
+      if (errstr != NULL)
+        errx(EXIT_FAILURE, "strtonum: %s", errstr);
       break;
     case 'W':
       if (strcmp(optarg, "block") == 0)
