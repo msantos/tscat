@@ -6,8 +6,8 @@ tscat *option* [*label*]
 
 tscat: timestamp stdin to stdout/stderr
 
-tscat timestamps standard input and writes the output to standard output
-and standard error.
+tscat timestamps standard input and writes the output to standard output,
+standard error or both.
 
 # EXAMPLES
 
