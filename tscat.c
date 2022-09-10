@@ -18,7 +18,6 @@
 #include <getopt.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdnoreturn.h>
 #include <string.h>
 #include <sys/resource.h>
 #include <time.h>
@@ -28,7 +27,7 @@
 #include "restrict_process.h"
 #include "strtonum.h"
 
-#define TS_VERSION "0.2.0"
+#define TS_VERSION "0.3.0"
 
 enum { TS_WR_BLOCK = 0, TS_WR_DROP, TS_WR_EXIT };
 
@@ -42,7 +41,7 @@ typedef struct {
 
 static int tscatin(ts_state_t *s);
 static int tscatout(ts_state_t *s, char *buf, size_t buflen);
-static noreturn void usage(void);
+static void usage(void);
 
 extern char *__progname;
 
@@ -61,7 +60,7 @@ int main(int argc, char *argv[]) {
 
   now = time(NULL);
   if (now == -1)
-    err(111, "time");
+    err(EXIT_FAILURE, "time");
 
   /* Initialize timezone before enabling process restrictions.
    *
@@ -70,10 +69,10 @@ int main(int argc, char *argv[]) {
   (void)localtime(&now);
 
   if (restrict_process_init() < 0)
-    err(111, "restrict_process_init");
+    err(EXIT_FAILURE, "restrict_process_init");
 
   if (setvbuf(stdout, NULL, _IOLBF, 0) < 0)
-    err(111, "setvbuf");
+    err(EXIT_FAILURE, "setvbuf");
 
   s.output = STDOUT_FILENO;
   s.print_timestamp = 1;
@@ -86,7 +85,7 @@ int main(int argc, char *argv[]) {
     case 'o':
       s.output = strtonum(optarg, 0, 3, &errstr);
       if (errstr != NULL)
-        errx(EXIT_FAILURE, "strtonum: %s", errstr);
+        errx(2, "strtonum: %s", errstr);
       break;
     case 'W':
       if (strcmp(optarg, "block") == 0)
@@ -96,12 +95,13 @@ int main(int argc, char *argv[]) {
       else if (strcmp(optarg, "exit") == 0)
         s.write_error = TS_WR_EXIT;
       else
-        errx(EXIT_FAILURE, "invalid option: %s: block|drop|exit", optarg);
+        errx(2, "invalid option: %s: block|drop|exit", optarg);
 
       break;
     case 'h':
     default:
       usage();
+      exit(0);
     }
   }
 
@@ -115,19 +115,19 @@ int main(int argc, char *argv[]) {
 
   if ((s.write_error != TS_WR_BLOCK) && (s.output & STDOUT_FILENO) &&
       (fcntl(fileno(stdout), F_SETFL, O_NONBLOCK) < 0))
-    err(111, "fcntl");
+    err(EXIT_FAILURE, "fcntl");
 
   if ((s.write_error != TS_WR_BLOCK) && (s.output & STDERR_FILENO) &&
       (fcntl(fileno(stderr), F_SETFL, O_NONBLOCK) < 0))
-    err(111, "fcntl");
+    err(EXIT_FAILURE, "fcntl");
 
   if (restrict_process_stdin() < 0)
-    err(3, "restrict_process_stdin");
+    err(EXIT_FAILURE, "restrict_process_stdin");
 
   if (tscatin(&s) < 0)
-    err(111, "tscatin");
+    err(EXIT_FAILURE, "tscatin");
 
-  exit(0);
+  return 0;
 }
 
 static int tscatin(ts_state_t *s) {
@@ -211,17 +211,18 @@ static int tscatout(ts_state_t *s, char *buf, size_t n) {
   return 0;
 }
 
-static noreturn void usage() {
-  errx(EXIT_FAILURE,
-       "[OPTION] [<LABEL>]\n"
-       "Timestamp stdin to stdout/stderr\n"
-       "version: %s (using %s mode process restriction)\n\n"
-       "-o, --output <1|2|3>      stdout=1, stderr=2, both=3 (default: 1)\n"
-       "-f, --format <fmt>        timestamp format (see strftime(3)) (default: "
-       "%%F%%T%%z)\n"
-       "-W, --write-error <exit|drop|block>\n"
-       "                          behaviour if write buffer is full (default: "
-       "block)\n"
-       "-h, --help                usage summary",
-       TS_VERSION, RESTRICT_PROCESS);
+static void usage() {
+  (void)fprintf(
+      stderr,
+      "[OPTION] [<LABEL>]\n"
+      "Timestamp stdin to stdout/stderr\n"
+      "version: %s (using %s mode process restriction)\n\n"
+      "-o, --output <1|2|3>      stdout=1, stderr=2, both=3 (default: 1)\n"
+      "-f, --format <fmt>        timestamp format (see strftime(3)) (default: "
+      "%%F%%T%%z)\n"
+      "-W, --write-error <exit|drop|block>\n"
+      "                          behaviour if write buffer is full (default: "
+      "block)\n"
+      "-h, --help                usage summary\n",
+      TS_VERSION, RESTRICT_PROCESS);
 }
