@@ -27,7 +27,7 @@
 #include "restrict_process.h"
 #include "strtonum.h"
 
-#define TS_VERSION "0.3.0"
+#define TS_VERSION "0.3.1"
 
 enum { TS_WR_BLOCK = 0, TS_WR_DROP, TS_WR_EXIT };
 
@@ -99,9 +99,11 @@ int main(int argc, char *argv[]) {
 
       break;
     case 'h':
-    default:
       usage();
       exit(0);
+    default:
+      usage();
+      exit(2);
     }
   }
 
@@ -214,7 +216,7 @@ static int tscatout(ts_state_t *s, char *buf, size_t n) {
 static void usage() {
   (void)fprintf(
       stderr,
-      "[OPTION] [<LABEL>]\n"
+      "%s: [OPTION] [<LABEL>]\n"
       "Timestamp stdin to stdout/stderr\n"
       "version: %s (using %s mode process restriction)\n\n"
       "-o, --output <1|2|3>      stdout=1, stderr=2, both=3 (default: 1)\n"
@@ -224,5 +226,5 @@ static void usage() {
       "                          behaviour if write buffer is full (default: "
       "block)\n"
       "-h, --help                usage summary\n",
-      TS_VERSION, RESTRICT_PROCESS);
+      __progname, TS_VERSION, RESTRICT_PROCESS);
 }
