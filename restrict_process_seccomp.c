@@ -137,6 +137,9 @@ int restrict_process_init() {
 #ifdef __NR_clock_gettime
       SC_ALLOW(clock_gettime),
 #endif
+#ifdef __NR_clock_gettime64
+      SC_ALLOW(clock_gettime64),
+#endif
 
 #ifdef __NR_exit_group
       SC_ALLOW(exit_group),
@@ -199,6 +202,10 @@ int restrict_process_init() {
 #endif
 #ifdef __NR_writev
       SC_ALLOW(writev),
+#endif
+
+#ifdef __NR_getrandom
+      SC_ALLOW(getrandom),
 #endif
 
 #ifdef __NR_restart_syscall
@@ -296,6 +303,9 @@ int restrict_process_stdin() {
 #ifdef __NR_clock_gettime
       SC_ALLOW(clock_gettime),
 #endif
+#ifdef __NR_clock_gettime64
+      SC_ALLOW(clock_gettime64),
+#endif
 
 #ifdef __NR_exit_group
       SC_ALLOW(exit_group),
@@ -339,6 +349,11 @@ int restrict_process_stdin() {
 #ifdef __NR_writev
       SC_ALLOW(writev),
 #endif
+
+#ifdef __NR_getrandom
+      SC_ALLOW(getrandom),
+#endif
+
 #ifdef __NR_restart_syscall
       SC_ALLOW(restart_syscall),
 #endif
