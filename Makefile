@@ -36,7 +36,7 @@ endif
 RM ?= rm
 
 RESTRICT_PROCESS ?= rlimit
-TSCAT_CFLAGS ?= -g -Wall -fwrapv -pedantic -pie -fPIE
+TSCAT_CFLAGS ?= -g -Wall -Wextra -fwrapv -pedantic -pie -fPIE
 
 CFLAGS += $(TSCAT_CFLAGS) \
 		  -DRESTRICT_PROCESS=\"$(RESTRICT_PROCESS)\" -DRESTRICT_PROCESS_$(RESTRICT_PROCESS)
