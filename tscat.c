@@ -27,7 +27,7 @@
 #include "restrict_process.h"
 #include "strtonum.h"
 
-#define TS_VERSION "0.3.3"
+#define TS_VERSION "0.3.4"
 
 enum { TS_WR_BLOCK = 0, TS_WR_DROP, TS_WR_EXIT };
 
