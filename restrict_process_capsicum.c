@@ -26,7 +26,7 @@
 
 int restrict_process_init() {
   struct rlimit rl = {0};
-  struct stat sb = {0};
+  struct stat sb;
 
   if (fstat(STDOUT_FILENO, &sb) < 0)
     return -1;
