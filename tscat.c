@@ -1,4 +1,4 @@
-/* Copyright (c) 2020-2023, Michael Santos <michael.santos@gmail.com>
+/* Copyright (c) 2020-2025, Michael Santos <michael.santos@gmail.com>
  *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -27,7 +27,7 @@
 #include "restrict_process.h"
 #include "strtonum.h"
 
-#define TS_VERSION "0.3.4"
+#define TS_VERSION "0.3.5"
 
 enum { TS_WR_BLOCK = 0, TS_WR_DROP, TS_WR_EXIT };
 
