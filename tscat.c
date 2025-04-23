@@ -213,7 +213,7 @@ static int tscatout(ts_state_t *s, char *buf, size_t n) {
   return 0;
 }
 
-static void usage() {
+static void usage(void) {
   (void)fprintf(
       stderr,
       "%s: [OPTION] [<LABEL>]\n"
